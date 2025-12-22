@@ -13,7 +13,7 @@ export async function isTikTokHandleAvailable(handle) {
     const json = JSON.parse(match[1]);
     const userDetail = json?.__DEFAULT_SCOPE__?.['webapp.user-detail'];
     if (!userDetail) return null;
-
+    // console.log(userDetail);
     const { statusCode, userInfo } = userDetail;
     
     if (statusCode === 0 && userInfo?.user?.id) 
