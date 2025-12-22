@@ -11,7 +11,7 @@ export async function isTwitterHandleAvailable(handle) {
     }
   );
 
-  if (res.status === 429) {
+  if (res.status === 429) { // 3 requests per 15 minutes
     return null;
   }
 
