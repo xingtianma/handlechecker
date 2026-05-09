@@ -24,6 +24,7 @@ export async function isTikTokHandleAvailable(handle) {
     return null;
   } 
   catch (error) {
+    console.log(error);
     return null;
   }
 }
