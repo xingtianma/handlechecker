@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle Checker</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #1a1a2e, #4a4a5a);
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin-top: 80px;
+            font-size: 3rem;
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        input {
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            width: 300px;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #5865f2;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4752c4;
+        }
+        #results {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+        }
+        .platform {
+            margin: 10px;
+        }
+        .available { color: #57f287; }
+        .taken { color: #ed4245; }
+        a { color: #7289da; }
+    </style>
+</head>
+
+<body>
+    <h1>Handle Checker</h1>
+    <div class="search-box">
+        <input type="text" id="handleInput" placeholder="Enter a handle...">
+        <button id="searchBtn">Search</button>
+    </div>
+    <div id="results"></div>
+
+    <script>
+        const input = document.getElementById("handleInput");
+        const btn = document.getElementById("searchBtn");
+        const results = document.getElementById("results");
+
+        btn.addEventListener("click", async () => {
+            const handle = input.value.trim();
+            if (!handle) return;
+
+            results.innerHTML = "Checking...";
+            const res = await fetch(`/api/check/${handle}`);
+            const data = await res.json();
+
+            const urls = {
+                twitter: h => `https://x.com/${h}`,
+                twitch: h => `https://twitch.tv/${h}`,
+                tiktok: h => `https://tiktok.com/@${h}`
+            };
+
+            results.innerHTML = Object.entries(data)
+                .filter(([k]) => k !== "handle")
+                .map(([platform, { available }]) => {
+                    const label = available === null ? "Unknown" : available ? "Available" : "Taken";
+                    const cls = available === null ? "" : available ? "available" : "taken";
+                    const link = !available && available !== null
+                        ? ` — <a href="${urls[platform](data.handle)}" target="_blank">${urls[platform](data.handle)}</a>`
+                        : "";
+                    return `<div class="platform">${platform}: <span class="${cls}">${label}</span>${link}</div>`;
+                }).join("");
+        });
+    </script>
+</body>
+
+</html>
