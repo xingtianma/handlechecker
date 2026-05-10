@@ -1,6 +1,8 @@
 # HandleChecker
 
-A CLI tool that checks username/handle availability across multiple social media platforms simultaneously.
+Check username availability across Twitter/X, Twitch, and TikTok.
+
+🔗 **Live:** [handlechecker.vercel.app](https://handlechecker.vercel.app/)
 
 ## Supported Platforms
 
@@ -10,59 +12,44 @@ A CLI tool that checks username/handle availability across multiple social media
 | **Twitch** | Helix API (`/users`) | Standard Twitch rate limits |
 | **TikTok** | Web scraping (profile page parse) | None (best effort) |
 
-## Prerequisites
-
-- [Node.js](https://nodejs.org/) v18+
-- API credentials for each platform (see [Configuration](#configuration))
-
 ## Getting Started
 
-### 1. Clone the repository
+### 1. Clone and install
 
 ```bash
 git clone https://github.com/xingtianma/handlechecker.git
 cd handlechecker
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
 ```
 
-### 3. Configure environment variables
+### 2. Configure environment variables
 
 Create a `.env` file in the project root:
 
 ```env
-# Twitch
 TWITCH_CLIENT_ID=your_client_id
 TWITCH_CLIENT_SECRET=your_client_secret
 TWITCH_ACCESS_TOKEN=your_access_token
-
-# Twitter / X
 TWITTER_BEARER_TOKEN=your_bearer_token
-TWITTER_ACCESS_TOKEN=your_access_token
-TWITTER_ACCESS_SECRET=your_access_secret
-
-# TikTok
-TIKTOK_CLIENT_KEY=your_client_key
-TIKTOK_CLIENT_SECRET=your_client_secret
 ```
 
-## Usage
+### 3. Run
+
+**Web server:**
+
+```bash
+npm run serve
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+**CLI:**
 
 ```bash
 npm start <handle>
 ```
 
-**Example:**
-
-```bash
-npm start coolname123
-```
-
-**Output:**
+**Example output:**
 
 ```json
 {
@@ -75,8 +62,6 @@ npm start coolname123
 
 ### Return Values
 
-Each platform returns one of three values:
-
 | Value | Meaning |
 |-------|---------|
 | `true` | Handle is available |
@@ -87,32 +72,27 @@ Each platform returns one of three values:
 
 ```
 handlechecker/
+├── api/
+│   └── check/
+│       └── [handle].js              # Vercel serverless function
+├── public/
+│   └── index.html                   # Web UI
 ├── src/
-│   ├── index.js                  # CLI entry point
+│   ├── index.js                     # CLI entry point
+│   ├── server.js                    # Express dev server
 │   ├── clients/
-│   │   ├── twitter.client.js     # Twitter/X API client
-│   │   ├── twitch.client.js      # Twitch Helix API client
-│   │   └── tiktok.client.js      # TikTok web scraper client
+│   │   ├── twitter.client.js
+│   │   ├── twitch.client.js
+│   │   └── tiktok.client.js
 │   └── services/
-│       └── handle.service.js     # Orchestrates checks across all platforms
+│       └── handle.service.js        # Orchestrates checks across all platforms
 ├── tests/
-│   ├── test-twitter.js           # Twitter client test
-│   ├── test-twitch.js            # Twitch client test
-│   └── test-tiktok.js            # TikTok client test
-├── public/                       # (Future) Web UI
-├── .env                          # API credentials (git-ignored)
-├── .gitignore
+│   ├── test-twitter.js
+│   ├── test-twitch.js
+│   └── test-tiktok.js
+├── vercel.json
+├── .env                             # API credentials (git-ignored)
 └── package.json
-```
-
-## Testing Individual Platforms
-
-You can test each platform client in isolation:
-
-```bash
-node tests/test-twitter.js <handle>
-node tests/test-twitch.js <handle>
-node tests/test-tiktok.js <handle>
 ```
 
 ## Getting API Credentials
@@ -134,10 +114,8 @@ node tests/test-tiktok.js <handle>
    ```
 
 ### TikTok
-1. Register at the [TikTok Developer Portal](https://developers.tiktok.com/)
-2. Create an app and obtain your **Client Key** and **Client Secret**
 
-> **Note:** The TikTok client currently uses web scraping rather than the official API, so credentials are optional for basic functionality.
+No credentials needed — the TikTok client uses web scraping.
 
 ## License
 
