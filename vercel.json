@@ -1,0 +1,7 @@
+{
+    "buildCommand": "",
+    "outputDirectory": "public",
+    "rewrites": [
+        { "source": "/api/check/:handle", "destination": "/api/check/[handle]" }
+    ]
+}
